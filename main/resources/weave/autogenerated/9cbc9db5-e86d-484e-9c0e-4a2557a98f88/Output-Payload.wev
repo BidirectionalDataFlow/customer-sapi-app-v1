@@ -1,0 +1,16 @@
+%dw 2.0
+
+type auto_9cbc9db5_e86d_484e_9c0e_4a2557a98f88_Output_Payload = {
+  phoneNumber: Number, 
+  address: String, 
+  gender: String, 
+  mobileNumber?: Number, 
+  name: String, 
+  registrationDate: String, 
+  dateOfBirth: String, 
+  customer_ID: String, 
+  email: String, 
+  status: String, 
+  _?: Any
+}
+

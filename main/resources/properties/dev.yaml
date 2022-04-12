@@ -1,0 +1,16 @@
+http:
+  host: "0.0.0.0"
+  port: "8081"
+
+
+sfdc:
+ username: "mailtobibhu.sahu@gmail.com" 
+ 
+ 
+db:
+ host: "bagvqf7jfiuvagzhwtap-mysql.services.clever-cloud.com"
+ port: "3306"
+ 
+autodiscoveryId: "17708558"
+ 
+ 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<sub-flow name="patch-customers-implementation-sub-flow" doc:id="052c27a7-80c9-4670-a042-625177b2de6a" >
+		<logger level="INFO" doc:name="Start" doc:id="20b3130b-a41f-4ad2-834c-f5ae8cc0567a" message='Start FLOW #[flow.name] "Calling SFDC Upsert"-- #[now()]'/>
+		<ee:transform doc:name="Request Payload" doc:id="9dc8d70f-89aa-455b-bd7a-65e951d94ade" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ((item, index) -> 
+{
+        "address__c": item.address,
+        "registration__c": item.registrationDate,
+        "dateofbirth__c": item.dateOfBirth,
+        "customerId__c": item.customer_ID,
+        "gender__c": item.gender,
+        "email__c": item.email,
+        "status__c": item.status,
+        "phoneno__c": item.phoneNumber,
+        "Name": item.name,
+        "lastModifiedDate__c" : now() as String {format : "dd-MM-yyyy'T'HH:mm:ss"}
+}    
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<!-- <salesforce:upsert objectType="customer_data__c" externalIdFieldName="Name" doc:name="Upsert" doc:id="85762bbc-ce1b-45da-896f-cccbdf3e9800" config-ref="Salesforce_Config"/> -->
+		<salesforce:upsert doc:name="Upsert Customers" doc:id="ca51686a-2f04-4e0c-85ea-dff0255a72c8" config-ref="Salesforce_Config" objectType="CustomerData__c" externalIdFieldName="customerId__c"/>
+		<ee:transform doc:name="Response Payload" doc:id="c8852258-539a-4580-9597-d6753447905a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End" doc:id="8321f0f4-364c-4b99-8e2e-de44aff183c2" message='END FLOW  " SFDC Upsert Calling"-- #[now()]'/>
+		<!-- <ee:transform doc:name="Transform Message" doc:id="2d8780e9-add7-470d-9aaa-4479cdae65e4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+-&#45;&#45;
+{
+  msg: "successful operation",
+  code: 400,
+  success: true,
+  eventId: "dbfhjsdbhfbdo8ryt876t75ty",
+  error: {
+    "type": "BAD_REQUEST",
+    title: "Invalid Request",
+    details: "The input contains invalid data, amount should be integer"
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform> -->
+	</sub-flow>
+</mule>

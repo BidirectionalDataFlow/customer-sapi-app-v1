@@ -1,0 +1,105 @@
+#%RAML 1.0
+title: CustomerData-sapi-raml
+description: This is Record File.
+version: v1
+protocols:
+  - HTTP
+  - HTTPS
+types:
+    getCustomerResponse: !include /Datatypes/get-customer-response-dataType.raml
+    patchCustomerRequest: !include /Datatypes/patch-customer-request-dataType.raml
+    patchCustomerResponse: !include /Datatypes/patch-customer-response-dataType.raml
+    getStatusResponse: !include /Datatypes/get-status-response-dataType.raml
+    patchStatusRequest: !include /Datatypes/patch-status-request-dataType.raml
+    patchStatusResponse: !include /Datatypes/patch-status-response-dataType.raml
+    commonError: !include /Datatypes/error-dataType.raml
+/customers:
+  get:
+    queryParameters:
+      status:
+        required: false
+        type: string
+        example: "false"
+      lastModifiedDateTime:
+        required: false
+        type: string
+        example: "01-01-2020T01:12:12"  
+    responses:
+      200:
+       body:
+        application/json:
+          type: getCustomerResponse
+          example: !include /examples/get-customer-response-example.json
+  patch:
+    body:
+      application/json:
+        type: patchCustomerRequest
+        example: !include /examples/patch-customer-request-example.json
+    responses:
+      200:
+        body:
+          application/json: 
+            type: patchCustomerResponse
+            example: !include /examples/patch-customer-response-example.json
+      400:
+        body:
+          application/json:
+            type: commonError
+            example: !include /error-responses/error-400-response.json
+      401:
+        body:
+          application/json:
+            type: commonError
+            example: !include /error-responses/error-401-response.json
+      404:
+        body:
+          application/json:
+            type: commonError
+            example: !include /error-responses/error-404-response.json
+      500:
+        body:
+          application/json:
+            type: commonError
+            example: !include /error-responses/error-500-response.json
+  /status:
+    get:
+      queryParameters:
+        lastModifiedDateTime:
+          required: false
+          type: string
+          example: "01-01-2020T01:12:12"  
+      responses:
+        200:
+          body:
+            application/json:
+              type: getStatusResponse
+              example: !include /examples/get-customer-response-example.json
+    patch:
+      body:
+        application/json:
+          type: patchStatusRequest
+          example: !include /examples/patch-status-request-example.json
+      responses:
+        200:
+          body:
+            application/json:  
+        400:
+          body:
+            application/json:
+              type: commonError
+              example: !include /error-responses/error-400-response.json
+        401:
+          body:
+            application/json:
+              type: commonError
+              example: !include /error-responses/error-401-response.json
+        404:
+          body:
+            application/json:
+              type: commonError
+              example: !include /error-responses/error-404-response.json
+        500:
+          body:
+            application/json:
+              type: commonError
+              example: !include /error-responses/error-500-response.json
