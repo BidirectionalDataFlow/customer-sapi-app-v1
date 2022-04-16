@@ -18,7 +18,7 @@ output application/java
 	customerName__c: "Name1001",
 	email__c: "email1001@gmail.com",
 	phone__c: "2378643501",
-	address__c:
+	address__c:"House1001",
 	dob__c: "21-12-2001",
 	gender__c: "Female",
 	status__c: "false",
