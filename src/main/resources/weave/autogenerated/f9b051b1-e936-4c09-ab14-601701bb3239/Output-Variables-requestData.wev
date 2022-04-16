@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_f9b051b1_e936_4c09_ab14_601701bb3239_Output_Variables_requestData = {|
+  requestPayload: Null, 
+  requestQueryParam: Null, 
+  requestUriParam: Null, 
+  requestHeader: Null, 
+  startTime: DateTime
+|}
+
