@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_36a75385_019f_4bf6_9f4a_ef5b7b39b288_Output_Payload = Array<{  customer_ID: String,   _?: Any}>
-
