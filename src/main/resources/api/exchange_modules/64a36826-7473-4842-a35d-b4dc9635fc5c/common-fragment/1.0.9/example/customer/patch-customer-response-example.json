@@ -1,0 +1,12 @@
+{
+  "QueryResponse": [
+    {
+      "customerId": "customer001",
+      "status": "updated"
+    },
+    {
+      "customerId": "customer002",
+      "status": "updated"
+    }
+  ]
+}

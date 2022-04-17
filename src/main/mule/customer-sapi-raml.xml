@@ -30,25 +30,12 @@
     </flow>
     <flow name="post:\customers:application\json:customer-sapi-raml-config">
         <flow-ref doc:name="Flow Reference Inisialize Request Data" doc:id="339315f8-76d5-4202-b675-b4c23c9d0901" name="initialize-request-data-subFlow"/>
-		<flow-ref doc:name="Flow Reference" doc:id="6d305db7-0c74-46ba-8012-2399e21f6592" name="post-customer-implementationFlow"/>
-		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  customerResponse: [
-    {
-      customerId: "customer001",
-      status: "true"
-    }, 
-    {
-      customerId: "customer002",
-      status: "true"
-    }
-  ]
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="Flow Reference post-customer-implementationFlow" doc:id="6d305db7-0c74-46ba-8012-2399e21f6592" name="post-customer-implementationFlow"/>
+		<error-handler ref="global-errorError-handler-app" />
+    </flow>
+    <flow name="get:\customers:customer-sapi-raml-config">
+        <flow-ref doc:name="Flow Reference Inisialize Request Data" doc:id="788fcf7a-acdb-472d-862b-e84c9d41d597" name="initialize-request-data-subFlow"/>
+		<flow-ref doc:name="Flow Reference get-customer-implementationFlow" doc:id="a51357a0-1ce5-40ec-803f-30243ce0a0c9" name="get-customer-implementationFlow"/>
+		<error-handler ref="global-errorError-handler-app" />
     </flow>
 </mule>

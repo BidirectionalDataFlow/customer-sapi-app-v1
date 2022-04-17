@@ -5,11 +5,9 @@ description: These apis are used for customer SAPI
 protocols: [HTTP, HTTPS]
 
 uses:
-  common-library: /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.6/common-fragment.raml
+  common-library: /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.9/common-fragment.raml
   
-
-
-
+  
 /customers:
   post:
     is:
@@ -18,32 +16,49 @@ uses:
     body:
       application/json:
         type: common-library.postCustomerRequest
-        example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.6/example/customer/post-customer-request-example.json
+        example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.9/example/customer/post-customer-request-example.json
     responses:
           201:
             body:
               application/json:
                 type: common-library.postCustomerResponse      
-                example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.6/example/customer/post-customer-response-example.json
-   
-                    
-
-       
-
-
-
-
-
-
-
-
-
+                example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.9/example/customer/post-customer-response-example.json
   
-  
-  
-  
-  
-  
-
-
+  get:
+    is:
+    - common-library.commonHeader
+    - common-library.commonError    
+    queryParameters:
+      lastModifiedDateTime:
+        type: string
+        required: false
+        example: "12-02-2233T12:23:01"
+      status:
+        type: string
+        required: false
+        example: "true"
+      customerId:
+        type: string
+        required: false
+        example: "Customer1001"
+    responses:
+      200:
+        body:
+          application/json:
+            type: common-library.get-customer-response
+            example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.9/example/customer/get-customer-response-example.json 
+  patch:
+    is:
+    - common-library.commonHeader
+    - common-library.commonError
+    body:
+      application/json:
+        type: common-library.patchCustomerRequest
+        example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.9/example/customer/patch-customer-request-example.json
+    responses:
+      200:
+        body:
+          application/json:
+            type: common-library.patchCustomerResponse 
+            example: !include /exchange_modules/64a36826-7473-4842-a35d-b4dc9635fc5c/common-fragment/1.0.9/example/customer/patch-customer-response-example.json
 

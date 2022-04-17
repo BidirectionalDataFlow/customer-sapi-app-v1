@@ -5,7 +5,7 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="post-customer-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
+	<flow name="get-customer-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
 		<ee:transform doc:name="Transform Message Request SFDC" doc:id="68af8de5-f8df-4abf-9840-cc7f040db491" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0

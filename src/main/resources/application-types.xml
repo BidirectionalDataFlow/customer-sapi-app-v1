@@ -245,7 +245,6 @@ type auto_28d7b903_2e44_4f2c_8d1f_7a4095791877_Output_Variables_requestData = {|
 ]]></types:shape>
     </types:type>
   </types:catalog>
-  <types:enrichment select="#1487efaf-8025-48fe-b56e-45badd2ae751"/>
   <types:enrichment select="#f9b051b1-e936-4c09-ab14-601701bb3239">
     <types:processor-declaration>
       <types:input-event>
