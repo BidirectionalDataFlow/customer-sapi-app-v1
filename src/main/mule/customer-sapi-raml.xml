@@ -38,4 +38,9 @@
 		<flow-ref doc:name="Flow Reference get-customer-implementationFlow" doc:id="a51357a0-1ce5-40ec-803f-30243ce0a0c9" name="get-customer-implementationFlow"/>
 		<error-handler ref="global-errorError-handler-app" />
     </flow>
+        <flow name="patch:\customers:application\json:customer-sapi-raml-config">
+        <flow-ref doc:name="Flow Reference Inisialize Request Data" doc:id="412be697-84ef-46f5-a4b6-1d275ac3fd4a" name="initialize-request-data-subFlow"/>
+		<flow-ref doc:name="Flow Reference patch-customer-implementationFlow" doc:id="ed5e6086-314b-4553-ae33-8d21fa1fac8e" name="patch-customer-implementationFlow"/>
+		<error-handler ref="global-errorError-handler-app" />
+    </flow>
 </mule>

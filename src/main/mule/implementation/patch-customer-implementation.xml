@@ -5,45 +5,42 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="get-customer-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
+	<flow name="patch-customer-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
 		<ee:transform doc:name="Transform Message Request SFDC" doc:id="68af8de5-f8df-4abf-9840-cc7f040db491" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-var whereClauseVar = if(vars.requestData.requestQueryParam.customerId != null or vars.requestData.requestQueryParam.status != null or vars.requestData.requestQueryParam.lastModifiedDateTime != null)(true)else(false)
-var customerIdVar = if(vars.requestData.requestQueryParam.customerId != null)(true)else(false)
-var statusVar = if(vars.requestData.requestQueryParam.status != null)(true)else(false)
-var lastModifiedDateTimeVar = if(vars.requestData.requestQueryParam.lastModifiedDateTime != null)(true)else(false)
+output application/java
 ---
-("Select customerId__c, customerName__c, email__c, phone__c, address__c, dob__c, gender__c, status__c, registrationDateTime__c, lastModifiedDateTime__c from CustomerDetails__c" ++ (if(whereClauseVar)(" where")else("")) ++ 
-(if(customerIdVar)(" and customerId__c = '" ++ vars.requestData.requestQueryParam.customerId ++ "'") else("")) ++  
-(if(statusVar)(" and status__c = '" ++ vars.requestData.requestQueryParam.status ++ "'") else("")) ++
-(if(lastModifiedDateTimeVar)(" and lastModifiedDateTime__c > '" ++ vars.requestData.requestQueryParam.lastModifiedDateTime ++ "'") else(""))) replace  ("where and") with ("where")]]></ee:set-payload>
+vars.requestData.requestPayload.customerRequest map((item,index)->{
+	customerId__c : item.customerId,
+	customerName__c: item.customerName,
+	email__c: item.email,
+	phone__c: item.phone,
+	address__c: item.address,
+	dob__c: item.dob,
+	gender__c: item.gender,
+	status__c: item.status,
+	registrationDateTime__c: item.registrationDateTime,
+	lastModifiedDateTime__c: now() as String {format : "dd-MM-yyyy'T'hh:mm:ss"}
+	
+})]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger before SFDC call" doc:id="78730ee9-1e6a-413b-a38e-58f0e29a0af4" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Request" &#10;}]'/>
-		<salesforce:query doc:name="Query Get Custome Details" doc:id="f5ba8221-9923-4096-93ee-0fd8c5116df3" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[#[payload]]]></salesforce:salesforce-query>
-		</salesforce:query>
+		<salesforce:upsert doc:name="Upsert Customer Data " doc:id="f9077ca1-d7ea-4368-b2ac-0631cd1bec4a" objectType="CustomerDetails__c" externalIdFieldName="customerId__c" config-ref="Salesforce_Config"/>
 		<logger level="INFO" doc:name="Logger after SFDC call" doc:id="57203d0f-352c-4739-8a5a-5a9b17936b7a" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Response" &#10;}]'/>
-		<ee:transform doc:name="Transform Message Get Cusomer Response" doc:id="d0c8d694-d4b1-4595-a0ed-884b89c1f069" >
+		<ee:transform doc:name="Transform Message Response" doc:id="d0c8d694-d4b1-4595-a0ed-884b89c1f069" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload map((item,index)->{
-	customerId : item.customerId__c,
-	customerName: item.customerName__c,
-	email: item.email__c,
-	phone: item.phone__c,
-	address: item.address__c,
-	dob: item.dob__c,
-	gender: item.gender__c,
-	status: item.status__c,
-	registrationDateTime: item.registrationDateTime__c,
-	lastModifiedDateTime: item.lastModifiedDateTime__c
-	
-})]]></ee:set-payload>
+{
+  customerResponse: payload.items map((item,index)->
+    {
+      customerId: vars.requestData.requestPayload.customerRequest[index].customerId,
+      status: item.successful
+    })
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<error-handler >
