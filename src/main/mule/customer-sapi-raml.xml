@@ -38,9 +38,19 @@
 		<flow-ref doc:name="Flow Reference get-customer-implementationFlow" doc:id="a51357a0-1ce5-40ec-803f-30243ce0a0c9" name="get-customer-implementationFlow"/>
 		<error-handler ref="global-errorError-handler-app" />
     </flow>
-        <flow name="patch:\customers:application\json:customer-sapi-raml-config">
+    <flow name="patch:\customers:application\json:customer-sapi-raml-config">
         <flow-ref doc:name="Flow Reference Inisialize Request Data" doc:id="412be697-84ef-46f5-a4b6-1d275ac3fd4a" name="initialize-request-data-subFlow"/>
 		<flow-ref doc:name="Flow Reference patch-customer-implementationFlow" doc:id="ed5e6086-314b-4553-ae33-8d21fa1fac8e" name="patch-customer-implementationFlow"/>
+		<error-handler ref="global-errorError-handler-app" />
+    </flow>
+    <flow name="post:\customers\status:application\json:customer-sapi-raml-config">
+        <flow-ref doc:name="Flow Reference Inisialize Request Data" doc:id="8a1c3cdf-8b05-46d6-acab-6370c8049258" name="initialize-request-data-subFlow"/>
+		<flow-ref doc:name="Flow Reference post-customer-status-implementationFlow" doc:id="218268a1-b6f7-4358-9479-83711b973124" name="post-customer-status-implementationFlow"/>
+		<error-handler ref="global-errorError-handler-app" />
+    </flow>
+    <flow name="get:\customers\status:customer-sapi-raml-config">
+        <flow-ref doc:name="Flow Reference Inisialize Request Data" doc:id="1d41ca25-8817-4cc8-a423-1f6f0a9a25ea" name="initialize-request-data-subFlow"/>
+		<flow-ref doc:name="Flow Reference get-customer-status-implementationFlow" doc:id="1a835271-c9d4-423f-97b7-48854b8eeae1" name="get-customer-status-implementationFlow"/>
 		<error-handler ref="global-errorError-handler-app" />
     </flow>
 </mule>

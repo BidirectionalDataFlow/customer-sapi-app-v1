@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="patch-customer-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
-		<logger level="INFO" doc:name="Logger before SFDC call" doc:id="78730ee9-1e6a-413b-a38e-58f0e29a0af4" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Request" &#10;}]'/>
-		<salesforce:update doc:name="Update Customer Data" doc:id="9272f6bf-b5b2-4b39-a824-c5fb15d16d61" config-ref="Salesforce_Config" type="CustomerDetails__c">
-			<salesforce:records ><![CDATA[#[%dw 2.0
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="post-customer-status-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
+		<ee:transform doc:name="Transform Message Request SFDC" doc:id="68af8de5-f8df-4abf-9840-cc7f040db491" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 vars.requestData.requestPayload.customerRequest map((item,index)->{
-	Name: "a015i000008lhap",
-	customerId__c : item.customerId,
-	status__c: "true",
-	lastModifiedDateTime__c: now() as String {format : "dd-MM-yyyy'T'hh:mm:ss"}
-})]]]></salesforce:records>
-		</salesforce:update>
+	customerId : item.customerId,
+	customerName: item.customerName,
+	email: item.email,
+	phone: item.phone,
+	address: item.address,
+	dob: item.dob,
+	gender: item.gender,
+	registrationDateTime: item.registrationDateTime,
+	lastModifiedDateTime: now() as String {format : "dd-MM-yyyy'T'hh:mm:ss"}
+	
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger before SFDC call" doc:id="78730ee9-1e6a-413b-a38e-58f0e29a0af4" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Request" &#10;}]'/>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="aeb977ec-04d8-4d03-b551-99e2bd65043e" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into customer (customerId, customerName, email, phone, address, dob, gender, registrationDateTime, lastModifiedDateTime) values (:customerId, :customerName, :email, :phone, :address, :dob, :gender, :registrationDateTime, :lastModifiedDateTime)]]></db:sql>
+		</db:bulk-insert>
 		<logger level="INFO" doc:name="Logger after SFDC call" doc:id="57203d0f-352c-4739-8a5a-5a9b17936b7a" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Response" &#10;}]'/>
 		<ee:transform doc:name="Transform Message Response" doc:id="d0c8d694-d4b1-4595-a0ed-884b89c1f069" >
 			<ee:message >
@@ -25,10 +37,10 @@ vars.requestData.requestPayload.customerRequest map((item,index)->{
 output application/json
 ---
 {
-  customerResponse: payload.items map((item,index)->
+  customerResponse: payload map((item,index)->
     {
       customerId: vars.requestData.requestPayload.customerRequest[index].customerId,
-      status: item.successful
+      status: if(item == 1)("Success") else("false")
     })
 }]]></ee:set-payload>
 			</ee:message>
