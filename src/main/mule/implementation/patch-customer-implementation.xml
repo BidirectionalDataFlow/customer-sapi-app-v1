@@ -12,11 +12,19 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 output application/java
 ---
 vars.requestData.requestPayload.customerRequest map((item,index)->{
-	Name: "a015i000008lhap",
-	customerId__c : item.customerId,
-	status__c: "true",
-	lastModifiedDateTime__c: now() as String {format : "dd-MM-yyyy'T'hh:mm:ss"}
-})]]]></salesforce:records>
+    "registrationDateTime__c": "12-02-2233T12:23:05",
+    "address__c": "House1005",
+    "dob__c": "21-12-2005",
+    "phone__c": "2.378643505E9",
+    "customerId__c": "Customer1005",
+    "gender__c": "Female",
+    "customerName__c": "Name1005",
+    "lastModifiedDateTime__c": "18-04-2022T11:34:51",
+    "email__c": "email1005@gmail.com",
+    "status__c": "false",
+    "Id": null,
+    "type": "CustomerDetails__c"
+  })]]]></salesforce:records>
 		</salesforce:update>
 		<logger level="INFO" doc:name="Logger after SFDC call" doc:id="57203d0f-352c-4739-8a5a-5a9b17936b7a" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Response" &#10;}]'/>
 		<ee:transform doc:name="Transform Message Response" doc:id="d0c8d694-d4b1-4595-a0ed-884b89c1f069" >
