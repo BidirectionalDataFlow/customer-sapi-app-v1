@@ -22,7 +22,7 @@ vars.requestData.requestPayload.customerRequest map((item,index)->{
     "lastModifiedDateTime__c": item.lastModifiedDateTime,
     "email__c": item.email,
     "status__c": item.status,
-    "Id": item.id
+    "Id": item.sfdcId
   })]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

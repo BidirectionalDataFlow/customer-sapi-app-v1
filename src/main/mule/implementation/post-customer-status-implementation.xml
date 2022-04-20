@@ -13,6 +13,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 output application/java
 ---
 vars.requestData.requestPayload.customerRequest map((item,index)->{
+	sfdcId: item.sfdcId,
 	customerId : item.customerId,
 	customerName: item.customerName,
 	email: item.email,
@@ -28,7 +29,7 @@ vars.requestData.requestPayload.customerRequest map((item,index)->{
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger before SFDC call" doc:id="78730ee9-1e6a-413b-a38e-58f0e29a0af4" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Request" &#10;}]'/>
 		<db:bulk-insert doc:name="Bulk insert" doc:id="aeb977ec-04d8-4d03-b551-99e2bd65043e" config-ref="Database_Config">
-			<db:sql ><![CDATA[insert into customer (customerId, customerName, email, phone, address, dob, gender, registrationDateTime, lastModifiedDateTime) values (:customerId, :customerName, :email, :phone, :address, :dob, :gender, :registrationDateTime, :lastModifiedDateTime)]]></db:sql>
+			<db:sql ><![CDATA[insert into customer (sfdcId, customerId, customerName, email, phone, address, dob, gender, registrationDateTime, lastModifiedDateTime) values (:sfdcId, :customerId, :customerName, :email, :phone, :address, :dob, :gender, :registrationDateTime, :lastModifiedDateTime)]]></db:sql>
 		</db:bulk-insert>
 		<logger level="INFO" doc:name="Logger after SFDC call" doc:id="57203d0f-352c-4739-8a5a-5a9b17936b7a" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Response" &#10;}]'/>
 		<ee:transform doc:name="Transform Message Response" doc:id="d0c8d694-d4b1-4595-a0ed-884b89c1f069" >
