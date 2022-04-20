@@ -15,7 +15,7 @@ var customerIdVar = if(vars.requestData.requestQueryParam.customerId != null)(tr
 var statusVar = if(vars.requestData.requestQueryParam.status != null)(true)else(false)
 var lastModifiedDateTimeVar = if(vars.requestData.requestQueryParam.lastModifiedDateTime != null)(true)else(false)
 ---
-("Select customerId__c, customerName__c, email__c, phone__c, address__c, dob__c, gender__c, status__c, registrationDateTime__c, lastModifiedDateTime__c from CustomerDetails__c" ++ (if(whereClauseVar)(" where")else("")) ++ 
+("Select Id,customerId__c, customerName__c, email__c, phone__c, address__c, dob__c, gender__c, status__c, registrationDateTime__c, lastModifiedDateTime__c from CustomerDetails__c" ++ (if(whereClauseVar)(" where")else("")) ++ 
 (if(customerIdVar)(" and customerId__c = '" ++ vars.requestData.requestQueryParam.customerId ++ "'") else("")) ++  
 (if(statusVar)(" and status__c = '" ++ vars.requestData.requestQueryParam.status ++ "'") else("")) ++
 (if(lastModifiedDateTimeVar)(" and lastModifiedDateTime__c > '" ++ vars.requestData.requestQueryParam.lastModifiedDateTime ++ "'") else(""))) replace  ("where and") with ("where")]]></ee:set-payload>
@@ -41,7 +41,8 @@ payload map((item,index)->{
 	gender: item.gender__c,
 	status: item.status__c,
 	registrationDateTime: item.registrationDateTime__c,
-	lastModifiedDateTime: item.lastModifiedDateTime__c
+	lastModifiedDateTime: item.lastModifiedDateTime__c,
+	sfdcId: item.Id
 	
 })]]></ee:set-payload>
 			</ee:message>

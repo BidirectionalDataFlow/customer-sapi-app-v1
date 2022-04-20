@@ -6,25 +6,28 @@
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="patch-customer-implementationFlow" doc:id="28d7b903-2e44-4f2c-8d1f-7a4095791877" >
-		<logger level="INFO" doc:name="Logger before SFDC call" doc:id="78730ee9-1e6a-413b-a38e-58f0e29a0af4" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Request" &#10;}]'/>
-		<salesforce:update doc:name="Update Customer Data" doc:id="9272f6bf-b5b2-4b39-a824-c5fb15d16d61" config-ref="Salesforce_Config" type="CustomerDetails__c">
-			<salesforce:records ><![CDATA[#[%dw 2.0
-output application/java
+		<ee:transform doc:name="Transform Message" doc:id="65961a8e-7af4-4170-a273-2458d6e6b78d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
 ---
 vars.requestData.requestPayload.customerRequest map((item,index)->{
-    "registrationDateTime__c": "12-02-2233T12:23:05",
-    "address__c": "House1005",
-    "dob__c": "21-12-2005",
-    "phone__c": "2.378643505E9",
-    "customerId__c": "Customer1005",
-    "gender__c": "Female",
-    "customerName__c": "Name1005",
-    "lastModifiedDateTime__c": "18-04-2022T11:34:51",
-    "email__c": "email1005@gmail.com",
-    "status__c": "false",
-    "Id": null,
-    "type": "CustomerDetails__c"
-  })]]]></salesforce:records>
+    "registrationDateTime__c": item.registrationDateTime,
+    "address__c": item.address,
+    "dob__c": item.dob,
+    "phone__c": item.phone,
+    "customerId__c": item.customerId,
+    "gender__c": item.gender,
+    "customerName__c": item.customerName,
+    "lastModifiedDateTime__c": item.lastModifiedDateTime,
+    "email__c": item.email,
+    "status__c": item.status,
+    "Id": item.id
+  })]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger before SFDC call" doc:id="78730ee9-1e6a-413b-a38e-58f0e29a0af4" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Request" &#10;}]'/>
+		<salesforce:update doc:name="Update Customer Data" doc:id="9272f6bf-b5b2-4b39-a824-c5fb15d16d61" config-ref="Salesforce_Config" type="CustomerDetails__c">
 		</salesforce:update>
 		<logger level="INFO" doc:name="Logger after SFDC call" doc:id="57203d0f-352c-4739-8a5a-5a9b17936b7a" message='#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: now(), 	&#10;    transactionId: vars.requestData.requestHeader.transactionid, 	&#10;    AppName: app.name, 	&#10;    BusinessProcessName:  "Customer Registration", 	&#10;    Category:  "Customer", 	&#10;    OriginatingApplication:  "PAPI", 	&#10;    DesinationApplication:  "SFDC", 	&#10;    CustomerId: "NA", 	&#10;    txnState:  "SFDC Response" &#10;}]'/>
 		<ee:transform doc:name="Transform Message Response" doc:id="d0c8d694-d4b1-4595-a0ed-884b89c1f069" >
