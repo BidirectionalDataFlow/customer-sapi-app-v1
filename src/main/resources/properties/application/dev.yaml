@@ -1,0 +1,14 @@
+instanceId: ""
+
+http:
+  host: "0.0.0.0"
+  port: "8081"
+  
+sfdc:
+  username: "makm@raweng.com"
+
+database:
+  host: "b6o1uwbfgkmszuuvgphb-mysql.services.clever-cloud.com"
+  port: "3306"
+  user: "uazylbtur5iqynd1"
+  dbschema: "b6o1uwbfgkmszuuvgphb"
